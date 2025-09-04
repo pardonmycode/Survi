@@ -1,0 +1,10 @@
+func loopDown =
+    unten
+    unten
+unten
+end
+func loopa =
+wiederhole 3 mal
+links
+end
+end

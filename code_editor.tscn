@@ -1,0 +1,138 @@
+[gd_scene load_steps=2 format=3 uid="uid://becibolw633ar"]
+
+[ext_resource type="Script" uid="uid://dtjgh0rkrsdys" path="res://scenes/main/code_editor.gd" id="1_uoi7k"]
+
+[node name="CodeEditor" type="Node2D"]
+script = ExtResource("1_uoi7k")
+
+[node name="CodeEdit" type="CodeEdit" parent="."]
+offset_left = 2.0
+offset_top = 35.0
+offset_right = 414.0
+offset_bottom = 331.0
+scroll_smooth = true
+scroll_past_end_of_file = true
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_bookmarks = true
+gutters_draw_line_numbers = true
+
+[node name="HauptCodeLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 142.0
+offset_top = 9.0
+offset_right = 234.0
+offset_bottom = 32.0
+grow_horizontal = 2
+text = "Haupt-Code"
+
+[node name="PlayButton" type="Button" parent="."]
+offset_left = 145.0
+offset_top = 348.0
+offset_right = 186.0
+offset_bottom = 379.0
+text = "Play"
+
+[node name="StopButton" type="Button" parent="."]
+offset_left = 212.0
+offset_top = 348.0
+offset_right = 255.0
+offset_bottom = 379.0
+text = "Stop"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = 14.0
+offset_top = 405.0
+offset_right = 399.0
+offset_bottom = 569.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="HauptCodeLabel2" type="Label" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Bewege"
+
+[node name="ObenButton" type="Button" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "oben"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LinksButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "links"
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "<->"
+
+[node name="rechtsButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "rechts"
+
+[node name="UntenButton" type="Button" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "unten"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="HBoxContainer"]
+layout_mode = 2
+split_offset = 100
+dragging_enabled = false
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Action"
+
+[node name="Button3" type="Button" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "attacke"
+
+[node name="Button4" type="Button" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "sage"
+
+[node name="HSplitContainer2" type="HSplitContainer" parent="HBoxContainer"]
+layout_mode = 2
+split_offset = 100
+dragging_enabled = false
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "Funktion"
+
+[node name="ItemList" type="ItemList" parent="HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+select_mode = 1
+auto_width = true
+item_count = 2
+item_0/text = "wiederhole 3 mal"
+item_1/text = "gehe zurück"
+
+[node name="createFunction" type="Button" parent="."]
+offset_left = 15.0
+offset_top = 576.0
+offset_right = 154.0
+offset_bottom = 607.0
+text = "Erstelle Funktion"
+
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/ObenButton" to="." method="_on_button_pressed_oben"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/LinksButton" to="." method="_on_button_pressed_links"]
+[connection signal="item_clicked" from="HBoxContainer/VBoxContainer3/ItemList" to="." method="_on_item_list_item_clicked"]
