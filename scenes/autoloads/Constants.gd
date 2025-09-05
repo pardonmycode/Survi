@@ -14,7 +14,7 @@ const MAX_OBJECTS := 60
 const MAX_ENEMIES_PER_PLAYER := 0 # 2 # see main.gd for more object and enemy spawner constants
 
 #Player
-const MAX_INVENTORY_SLOTS := 9
+const MAX_INVENTORY_SLOTS := 12
 const OBJECT_SCORE_GAIN := 1
 const MOB_SCORE_GAIN := 2
 const PK_SCORE_GAIN := 4

@@ -43,7 +43,7 @@ var equippedItem : String:
 		if hp <= 0:
 			die()
 			
-@export var speed := 200
+@export var speed := 700
 var spawnsProjectile := ""
 
 @export var attackDamage := 10:
@@ -107,126 +107,167 @@ func sendMessage(text):
 func disconnected(id):
 	if str(id) == name:
 		die()
-func _physics_process(delta: float) -> void:
-	pass
+
+
+const tile_size: Vector2 = Vector2(64, 64)
+var sprite_node_pos_tween: Tween
+
+func _physics_process (delta: float) -> void:
+	if !sprite_node_pos_tween or !sprite_node_pos_tween.is_running():
+		if Input.is_action_pressed("walkUp"):# and !$up.is_colliding():
+			_move(Vector2(0, -1))
+		elif Input.is_action_pressed("walkDown"):# and !$down.is_colliding():
+			_move(Vector2(0, 1))
+		elif Input.is_action_pressed("walkLeft"):# and !$left.is_colliding():
+			_move(Vector2(-1, 0))
+		elif Input.is_action_pressed("walkRight"):# and !$right.is_colliding():
+			_move(Vector2(1, 0))
+		else:
+			_move(Vector2(0, 0))
+func _move(dir: Vector2):
+	global_position += dir * tile_size
+
+	#$MovingParts.global_position -= dir * tile_size
+
+	if sprite_node_pos_tween:
+		sprite_node_pos_tween.kill()
+	sprite_node_pos_tween = create_tween()
+	sprite_node_pos_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	sprite_node_pos_tween.tween_property($MovingParts, "global_position", global_position, 0.005).set_trans(Tween.TRANS_SINE) 
+	$MovingParts.rotation = dir.angle()
+	
+	if dir != Vector2.ZERO:
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
+			$AnimationPlayer.play("walking")
+	else:
+		$AnimationPlayer.stop()
+	
+
+
 	
 var last_angle = 0.0
-func _process(_delta):
-	if str(multiplayer.get_unique_id()) != name:
-		return
-	
-	var vel := Vector2.ZERO
-	var doingAction = false
-	var angle = 0.0
-	
-	var actions = []
-
-	# Code für Keyboard und mouse control 	
-	vel = Input.get_vector("walkLeft", "walkRight", "walkUp", "walkDown") * speed
-	#var mouse_position = get_global_mouse_position()
-	#var direction_to_mouse = mouse_position - global_position
-	#var angle = direction_to_mouse.angle()
-	doingAction = Input.is_action_pressed("leftClickAction")
-	#Apply local movement
-	# Default-Werte zurücksetzen
-	if vel != Vector2.ZERO:
-		last_coords = Multihelper.get_map_position(position)
-	action(vel, angle, doingAction)
-	
-	# Neue Verbindungen akzeptieren
-	if _tcp_server.is_connection_available():
-		var tcp_peer = _tcp_server.take_connection()
-		ws_peer = WebSocketPeer.new()
-		ws_peer.accept_stream(tcp_peer)  # Upgrade zu WebSocket
-		_ws_peers.append(ws_peer)
-		print("Neuer Client verbunden!")
-	
-	# Nachrichten aller Clients verarbeiten
-	for ws_peer in _ws_peers:
-		ws_peer.poll()
-		var state = ws_peer.get_ready_state()
-		last_position = position
-		if state == WebSocketPeer.STATE_OPEN:
-			# Nachrichten empfangen
-			while ws_peer.get_available_packet_count() > 0:
-				var packet = ws_peer.get_packet().get_string_from_utf8()
-				print("Empfangen: ", packet)
-				
-
-					
-				var lines = packet.split(",", false)  # `false` ignoriert leere Zeilen
-				
-				#actions.append([packet,angle,doingAction])
-				var act = lines[0].strip_edges() 
-				
-				if "sage" in act:
-					var text = act.trim_prefix("sage")
-					sendMessage(text)
-				if "gehe zurück" in act:
-					print("gehe zurück")
-					geheZuPosition(last_position)
-				
-					
-				var time_delay =  float(lines[1]) * 0.1 * 2
-				
-				
-				print(act)
-				print(time_delay)
-				Input.action_press(act) 
-				doingAction = Input.is_action_pressed("leftClickAction")
-				print(doingAction)
-				vel = Input.get_vector("walkLeft", "walkRight", "walkUp", "walkDown") * speed
-				action(vel, angle, doingAction)
-				await get_tree().create_timer(time_delay).timeout 
-				Input.action_release(act)
-				#for line in lines:
-					#var clean_line = line.strip_edges()  # Entfernt Leerzeichen/Newlines
-					#if clean_line.is_empty():
-						#continue  # Überspringe leere Zeilen
-					#
-					#print("Verarbeite Befehl: '%s'" % clean_line)  # Debug     
-					#match clean_line.to_lower():  # Case-insensitive Vergleich
-						#"links":
-							#print("Bewege nach LINKS")
-							##vel.x += -speed
-							#angle = vel.angle()
-							#actions.append(["walkLeft",angle,doingAction])
-						#"rechts":
-							#print("Bewege nach RECHTS")
-							#vel.x += speed
-							#actions.append(["walkRight",angle,doingAction])
-						#"hoch", "oben":  # Beide Varianten erlaubt
-							#print("Bewege nach OBEN")
-							#vel.y += -speed
-							#actions.append(["walkUp",angle,doingAction])
-						#"runter", "unten":
-							#print("Bewege nach UNTEN")
-							#vel.y += speed
-							#actions.append(["walkDown",angle,doingAction])
-						#_:
-							#print("Unbekannter Befehl: '%s'" % clean_line)
-							
-				ws_peer.send_text("Godot bestätigt: " + packet)
-		
-		elif state == WebSocketPeer.STATE_CLOSED:
-			_ws_peers.erase(ws_peer)
-			
-		#for act in actions:
+##
+#func _process(_delta):
+	#if str(multiplayer.get_unique_id()) != name:
+		#return
+	#
+	#var vel := Vector2.ZERO
+	#var doingAction = false
+	#var angle = 0.0
+	#
+	#var actions = []
+#
+	## Code für Keyboard und mouse control 	
+	##vel = Input.get_vector("walkLeft", "walkRight", "walkUp", "walkDown") * speed
+	##var mouse_position = get_global_mouse_position()
+	##var direction_to_mouse = mouse_position - global_position
+	##var angle = direction_to_mouse.angle()
+	##doingAction = Input.is_action_pressed("leftClickAction")
+	##Apply local movement
+	## Default-Werte zurücksetzen
+	#if vel != Vector2.ZERO:
+		#last_coords = Multihelper.get_map_position(position)
+	##action(vel, angle, doingAction)
+	#
+	## Neue Verbindungen akzeptieren
+	#if _tcp_server.is_connection_available():
+		#var tcp_peer = _tcp_server.take_connection()
+		#ws_peer = WebSocketPeer.new()
+		#ws_peer.accept_stream(tcp_peer)  # Upgrade zu WebSocket
+		#_ws_peers.append(ws_peer)
+		#print("Neuer Client verbunden!")
+	#
+	## Nachrichten aller Clients verarbeiten
+	#for ws_peer in _ws_peers:
+		#ws_peer.poll()
+		#var state = ws_peer.get_ready_state()
+		#last_position = position
+		#if state == WebSocketPeer.STATE_OPEN:
+			## Nachrichten empfangen
+			#while ws_peer.get_available_packet_count() > 0:
+				#var packet = ws_peer.get_packet().get_string_from_utf8()
+				#print("Empfangen: ", packet)
 				#
-			##if time < Time.get_ticks_msec() - 500 :
-				#Input.action_press(act[0]) 
+#
+					#
+				#var lines = packet.split(",", false)  # `false` ignoriert leere Zeilen
+				#
+				##actions.append([packet,angle,doingAction])
+				#var act = lines[0].strip_edges() 
+				#
+				#if "sage" in act:
+					#var text = act.trim_prefix("sage")
+					#sendMessage(text)
+				#if "gehe zurück" in act:
+					#print("gehe zurück")
+					#geheZuPosition(last_position)
+				#
+					#
+				#var time_delay =  float(lines[1]) * 0.1 * 2
+				#
+				#
+				#print(act)
+				#print(time_delay)
+				#Input.action_press(act) 
 				#doingAction = Input.is_action_pressed("leftClickAction")
 				#print(doingAction)
 				#vel = Input.get_vector("walkLeft", "walkRight", "walkUp", "walkDown") * speed
 				#action(vel, angle, doingAction)
-				#await get_tree().create_timer(0.2).timeout 
-				#Input.action_release(act[0])
-				#action(act[0], act[1],act[2])
-				#time = Time.get_ticks_msec()
-		actions = []
-		#if time < Time.get_ticks_msec() - 500 :
-			#action(Vector2.ZERO, angle, false)
-			#print(time)
+				#
+				#await get_tree().create_timer(time_delay).timeout 
+				#Input.action_release(act)
+				#vel 		= Vector2.ZERO
+				#doingAction = false
+				#action(vel, angle, doingAction)
+				#
+				##for line in lines:
+					##var clean_line = line.strip_edges()  # Entfernt Leerzeichen/Newlines
+					##if clean_line.is_empty():
+						##continue  # Überspringe leere Zeilen
+					##
+					##print("Verarbeite Befehl: '%s'" % clean_line)  # Debug     
+					##match clean_line.to_lower():  # Case-insensitive Vergleich
+						##"links":
+							##print("Bewege nach LINKS")
+							###vel.x += -speed
+							##angle = vel.angle()
+							##actions.append(["walkLeft",angle,doingAction])
+						##"rechts":
+							##print("Bewege nach RECHTS")
+							##vel.x += speed
+							##actions.append(["walkRight",angle,doingAction])
+						##"hoch", "oben":  # Beide Varianten erlaubt
+							##print("Bewege nach OBEN")
+							##vel.y += -speed
+							##actions.append(["walkUp",angle,doingAction])
+						##"runter", "unten":
+							##print("Bewege nach UNTEN")
+							##vel.y += speed
+							##actions.append(["walkDown",angle,doingAction])
+						##_:
+							##print("Unbekannter Befehl: '%s'" % clean_line)
+							#
+				#ws_peer.send_text("Godot bestätigt: " + packet)
+		#
+		#elif state == WebSocketPeer.STATE_CLOSED:
+			#_ws_peers.erase(ws_peer)
+			#
+		##for act in actions:
+				##
+			###if time < Time.get_ticks_msec() - 500 :
+				##Input.action_press(act[0]) 
+				##doingAction = Input.is_action_pressed("leftClickAction")
+				##print(doingAction)
+				##vel = Input.get_vector("walkLeft", "walkRight", "walkUp", "walkDown") * speed
+				##action(vel, angle, doingAction)
+				##await get_tree().create_timer(0.2).timeout 
+				##Input.action_release(act[0])
+				##action(act[0], act[1],act[2])
+				##time = Time.get_ticks_msec()
+		#actions = []
+		##if time < Time.get_ticks_msec() - 500 :
+			##action(Vector2.ZERO, angle, false)
+			##print(time)
 		
 			
 func geheZuPosition(posi: Vector2) -> void:
@@ -284,10 +325,11 @@ func moveProcess(vel, angle, doingAction):
 		print("last_coords"+str(last_coords))
 		
 		var pos = Multihelper.get_map_position(position)
-		print("pos"+str(pos))
+		print("pos"+str(pos)+"real pos"+str(position))
 		#for i in range(13):
 			#if last_coords == Multihelper.get_map_position(position):
-		move_and_slide()
+		for i in range(13):
+			move_and_slide()
 		#while last_coords == Multihelper.get_map_position(position):
 			#move_and_slide()
 			

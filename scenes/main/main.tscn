@@ -105,6 +105,7 @@ autostart = true
 [node name="dayNight" type="CanvasModulate" parent="."]
 script = ExtResource("7_4y3sb")
 gradient_texture = ExtResource("8_le63a")
+INGAME_SPEED = 2.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dr53p")
