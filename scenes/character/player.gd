@@ -4,6 +4,14 @@ signal mob_killed
 signal object_destroyed
 signal player_killed
 
+const TILE_SIZE = 64
+var direction = Vector2.ZERO
+var pixels_per_second: float
+var _step_size: float
+var _step: float = 0
+var _pixels_moved: int = 0
+
+
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
 var _ws_peers = []  # Liste der aktiven WebSocket-Verbindungen
@@ -63,11 +71,15 @@ var attackRange := 1.0:
 		var clampedVal = clampf(value, 1.0, 5.0)
 		attackRange = clampedVal
 		%HitCollision.shape.height = 20 * clampedVal
+		
 var last_coords: Vector2i 
 var ws_peer = WebSocketPeer.new()
 var last_position : Vector2
 
 func _ready():
+	pixels_per_second = 1 * TILE_SIZE  # e.g., move one tile per second
+	_step_size = (1 / pixels_per_second)
+	
 	_tcp_server.listen(8765)  # Port 8765
 	print("Server gestartet auf ws://localhost:8765")
 	
@@ -112,7 +124,43 @@ func disconnected(id):
 const tile_size: Vector2 = Vector2(64, 64)
 var sprite_node_pos_tween: Tween
 
+func is_moving() -> bool:
+	return direction != Vector2.ZERO
+	
+func _input(event):
+	if is_moving(): return
+	if Input.is_action_pressed("walkRight"):
+		direction = Vector2(1, 0)
+	elif Input.is_action_pressed("walkLeft"):
+		direction = Vector2(-1, 0)
+	elif Input.is_action_pressed("walkUp"):
+		direction = Vector2(0, -1)
+	elif Input.is_action_pressed("walkDown"):
+		direction = Vector2(0, 1)
+
 func _physics_process (delta: float) -> void:
+	if str(multiplayer.get_unique_id()) != name:
+		return
+	if not is_moving():
+		return
+
+	_step += delta
+	if _step < _step_size:
+		return
+
+	_step -= _step_size
+	_pixels_moved += 1
+	move_and_collide(direction)
+
+	if _pixels_moved >= TILE_SIZE:
+		direction = Vector2.ZERO
+		_pixels_moved = 0
+		_step = 0
+	#net_commander()
+	#tile_move()
+
+
+func tile_move():		
 	if !sprite_node_pos_tween or !sprite_node_pos_tween.is_running():
 		if Input.is_action_pressed("walkUp"):# and !$up.is_colliding():
 			_move(Vector2(0, -1))
@@ -124,24 +172,86 @@ func _physics_process (delta: float) -> void:
 			_move(Vector2(1, 0))
 		else:
 			_move(Vector2(0, 0))
+			
 func _move(dir: Vector2):
 	global_position += dir * tile_size
-
 	#$MovingParts.global_position -= dir * tile_size
-
+	
+	
+	
 	if sprite_node_pos_tween:
 		sprite_node_pos_tween.kill()
 	sprite_node_pos_tween = create_tween()
 	sprite_node_pos_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
-	sprite_node_pos_tween.tween_property($MovingParts, "global_position", global_position, 0.005).set_trans(Tween.TRANS_SINE) 
-	$MovingParts.rotation = dir.angle()
-	
+	sprite_node_pos_tween.tween_property($MovingParts, "global_position", global_position, 0.5).set_trans(Tween.TRANS_SINE) 
+	sprite_node_pos_tween.tween_callback(func(): dir = Vector2.ZERO )
+	animate_player(dir)
+
+func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
+		$MovingParts.rotation = dir.angle()
 		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
 			$AnimationPlayer.play("walking")
+			await get_tree().create_timer(0.5).timeout
+			#Input.action_release("walkUp")
+	 
+		
+		
+func animate_player2(dir: Vector2):
+	if dir != Vector2.ZERO:
+		$MovingParts.rotation = dir.angle()
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
+			$AnimationPlayer.play("walking")
+			Input.action_release("walkUp")
+			await get_tree().create_timer(1.5).timeout 
+			$AnimationPlayer.stop()
 	else:
 		$AnimationPlayer.stop()
-	
+	if not $AnimationPlayer.is_playing():
+		#await get_tree().create_timer(1.5).timeout 
+		Input.action_release("walkUp")
+
+func net_commander():
+	if _tcp_server.is_connection_available():
+		var tcp_peer = _tcp_server.take_connection()
+		ws_peer = WebSocketPeer.new()
+		ws_peer.accept_stream(tcp_peer)  # Upgrade zu WebSocket
+		_ws_peers.append(ws_peer)
+		print("Neuer Client verbunden!")
+		
+	for ws_peer in _ws_peers:
+		ws_peer.poll()
+		var state = ws_peer.get_ready_state()
+		last_position = position
+		if state == WebSocketPeer.STATE_OPEN:
+			# Nachrichten empfangen
+			while ws_peer.get_available_packet_count() > 0:
+				var packet = ws_peer.get_packet().get_string_from_utf8()
+				print("Empfangen: ", packet)
+
+				var lines = packet.split(",", false)  # `false` ignoriert leere Zeilen
+				
+				#actions.append([packet,angle,doingAction])
+				var act = lines[0].strip_edges() 
+				
+				if "sage" in act:
+					var text = act.trim_prefix("sage")
+					sendMessage(text)
+										
+				var time_delay =  float(lines[1]) * 0.1 * 2
+				
+				
+				print(act)
+				print(time_delay)
+				Input.action_press(act) 
+				#doingAction = Input.is_action_pressed("leftClickAction")
+				#print(doingAction)
+				#action(vel, angle, doingAction)
+				
+				ws_peer.send_text("Godot bestätigt: " + packet)
+		
+		elif state == WebSocketPeer.STATE_CLOSED:
+			_ws_peers.erase(ws_peer)
 
 
 	
