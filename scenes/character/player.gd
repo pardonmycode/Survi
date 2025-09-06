@@ -219,7 +219,10 @@ func press_action(action : String):
 		elif action == "walkDown":
 			print("input walkDown")
 			direction = Vector2(0, 1)
-	
+	if "left" in action:
+		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
+			$AnimationPlayer.play(action_anim)
 	
 
 var last_angle = 0.0
