@@ -38,7 +38,8 @@ def on_message(ws, message):
     if "play_it_now" in message:
         for msg in converted_msg:
             ws.send(f"{msg[0]} , {msg[1]}")
-            time.sleep(0.2)
+            
+            # time.sleep(1.2)
         log(f"Sent action: {converted_msg}")
 
 def on_open(ws):

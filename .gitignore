@@ -5,6 +5,7 @@
 .import/
 export.cfg
 *.import
+*.tmp
 
 # Imported translations (automatically generated from CSV files)
 *.translation

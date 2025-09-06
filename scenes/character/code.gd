@@ -1,8 +1,8 @@
 extends Node2D
 
 
-@onready var code_edit = $CodeEdit
-@onready var item_list = $HBoxContainer/VBoxContainer3/ItemList
+@onready var code_edit = $CodeContainer/CodeEdit
+@onready var item_list = $ActionsContainer/HBoxContainer/VBoxContainer3/ItemList
 @onready var player =  "res://scenes/character/player.gd"
 
 func _ready() -> void:
@@ -42,3 +42,6 @@ func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_i
 func _on_create_function_pressed() -> void:
 	popup.popup_centered()
 	pass # Replace with function body.
+
+func _on_code_delete_button_pressed() -> void:
+	code_edit.text = ""

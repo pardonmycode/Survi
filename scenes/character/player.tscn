@@ -1,11 +1,11 @@
 [gd_scene load_steps=18 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
-[ext_resource type="Texture2D" uid="uid://cprhhbhqaij5" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
+[ext_resource type="Texture2D" uid="uid://cojm327d0qfvc" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
 [ext_resource type="PackedScene" uid="uid://fgbg7uc3rey6" path="res://scenes/ui/playerUI/playerUI.tscn" id="3_brb0h"]
-[ext_resource type="AudioStream" uid="uid://ds8a23j0eg4hy" path="res://assets/sfx/step.ogg" id="4_bflkw"]
-[ext_resource type="Texture2D" uid="uid://bnfqlk3fs5moa" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
-[ext_resource type="AudioStream" uid="uid://2kibx8mg1ogv" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
+[ext_resource type="AudioStream" uid="uid://p6udp7goe4do" path="res://assets/sfx/step.ogg" id="4_bflkw"]
+[ext_resource type="Texture2D" uid="uid://bq2x0tji1tvkq" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
+[ext_resource type="AudioStream" uid="uid://bdbqwftwm7jjj" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
 
@@ -385,11 +385,23 @@ z_index = 2
 position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
 
-[node name="CodeEdit" type="CodeEdit" parent="Code"]
-offset_left = 2.0
-offset_top = 35.0
-offset_right = 414.0
-offset_bottom = 331.0
+[node name="CodeContainer" type="VBoxContainer" parent="Code"]
+offset_left = 33.0
+offset_top = 13.0
+offset_right = 421.0
+offset_bottom = 493.0
+size_flags_horizontal = 6
+size_flags_vertical = 3
+
+[node name="HauptCodeLabel" type="Label" parent="Code/CodeContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Haupt-Code"
+
+[node name="CodeEdit" type="CodeEdit" parent="Code/CodeContainer"]
+layout_mode = 2
+size_flags_vertical = 3
 scroll_smooth = true
 scroll_past_end_of_file = true
 highlight_current_line = true
@@ -397,106 +409,92 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[node name="HauptCodeLabel" type="Label" parent="Code"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 142.0
-offset_top = 9.0
-offset_right = 234.0
-offset_bottom = 32.0
-grow_horizontal = 2
-text = "Haupt-Code"
+[node name="ButtonCotainer" type="HBoxContainer" parent="Code/CodeContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 15
 
-[node name="PlayButton" type="Button" parent="Code"]
-offset_left = 145.0
-offset_top = 348.0
-offset_right = 186.0
-offset_bottom = 379.0
+[node name="PlayButton" type="Button" parent="Code/CodeContainer/ButtonCotainer"]
+layout_mode = 2
 text = "Play"
 
-[node name="StopButton" type="Button" parent="Code"]
-offset_left = 212.0
-offset_top = 348.0
-offset_right = 255.0
-offset_bottom = 379.0
+[node name="StopButton" type="Button" parent="Code/CodeContainer/ButtonCotainer"]
+layout_mode = 2
 text = "Stop"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Code"]
-offset_left = 14.0
-offset_top = 405.0
-offset_right = 399.0
-offset_bottom = 569.0
+[node name="CodeDeleteButton" type="Button" parent="Code/CodeContainer/ButtonCotainer"]
+layout_mode = 2
+text = "Code löschen"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Code/HBoxContainer"]
+[node name="ActionsContainer" type="VBoxContainer" parent="Code"]
+offset_left = 46.0
+offset_top = 516.0
+offset_right = 407.0
+offset_bottom = 679.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Code/ActionsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BewegContainer" type="VBoxContainer" parent="Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="HauptCodeLabel" type="Label" parent="Code/HBoxContainer/VBoxContainer"]
+[node name="BewegeLabel" type="Label" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 text = "Bewege"
 
-[node name="ObenButton" type="Button" parent="Code/HBoxContainer/VBoxContainer"]
+[node name="ObenButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "oben"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Code/HBoxContainer/VBoxContainer"]
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
+theme_override_constants/separation = 9
 
-[node name="LinksButton" type="Button" parent="Code/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="LinksButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "links"
 
-[node name="Label" type="Label" parent="Code/HBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "<->"
-
-[node name="rechtsButton" type="Button" parent="Code/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="rechtsButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "rechts"
 
-[node name="UntenButton" type="Button" parent="Code/HBoxContainer/VBoxContainer"]
+[node name="UntenButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "unten"
 
-[node name="HSplitContainer" type="HSplitContainer" parent="Code/HBoxContainer"]
-layout_mode = 2
-split_offset = 100
-dragging_enabled = false
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="Code/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Label" type="Label" parent="Code/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Action"
 
-[node name="attackeButton" type="Button" parent="Code/HBoxContainer/VBoxContainer2"]
+[node name="attackeButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "attacke"
 
-[node name="sageButton" type="Button" parent="Code/HBoxContainer/VBoxContainer2"]
+[node name="sageButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "sage"
 
-[node name="HSplitContainer2" type="HSplitContainer" parent="Code/HBoxContainer"]
-layout_mode = 2
-split_offset = 100
-dragging_enabled = false
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="Code/HBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Code/HBoxContainer/VBoxContainer3"]
+[node name="Label" type="Label" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 text = "Funktion"
 
-[node name="ItemList" type="ItemList" parent="Code/HBoxContainer/VBoxContainer3"]
+[node name="ItemList" type="ItemList" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -505,18 +503,15 @@ auto_width = true
 item_count = 1
 item_0/text = "wiederhole 3 mal"
 
-[node name="createFunction" type="Button" parent="Code"]
-offset_left = 15.0
-offset_top = 576.0
-offset_right = 154.0
-offset_bottom = 607.0
+[node name="createFunction" type="Button" parent="Code/ActionsContainer"]
+layout_mode = 2
 text = "Erstelle Funktion"
 
-[node name="PopupPanel" type="PopupPanel" parent="Code"]
+[node name="PopupPanel" type="PopupPanel" parent="Code/ActionsContainer"]
 title = "Funktionen"
 size = Vector2i(600, 600)
 
-[node name="CodeEdit" type="CodeEdit" parent="Code/PopupPanel"]
+[node name="CodeEdit" type="CodeEdit" parent="Code/ActionsContainer/PopupPanel"]
 custom_minimum_size = Vector2(400, 400)
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -534,12 +529,13 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[connection signal="pressed" from="Code/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="Code/HBoxContainer/VBoxContainer/ObenButton" to="Code" method="_on_oben_button_pressed"]
-[connection signal="pressed" from="Code/HBoxContainer/VBoxContainer/HBoxContainer/LinksButton" to="Code" method="_on_links_button_pressed"]
-[connection signal="pressed" from="Code/HBoxContainer/VBoxContainer/HBoxContainer/rechtsButton" to="Code" method="_on_rechts_button_pressed"]
-[connection signal="pressed" from="Code/HBoxContainer/VBoxContainer/UntenButton" to="Code" method="_on_unten_button_pressed"]
-[connection signal="pressed" from="Code/HBoxContainer/VBoxContainer2/attackeButton" to="Code" method="_on_attacke_button_pressed"]
-[connection signal="pressed" from="Code/HBoxContainer/VBoxContainer2/sageButton" to="Code" method="_on_sage_button_pressed"]
-[connection signal="item_clicked" from="Code/HBoxContainer/VBoxContainer3/ItemList" to="Code" method="_on_item_list_item_clicked"]
-[connection signal="pressed" from="Code/createFunction" to="Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="Code/CodeContainer/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="Code/CodeContainer/ButtonCotainer/CodeDeleteButton" to="Code" method="_on_code_delete_button_pressed"]
+[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="Code" method="_on_oben_button_pressed"]
+[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="Code" method="_on_links_button_pressed"]
+[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="Code" method="_on_rechts_button_pressed"]
+[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="Code" method="_on_unten_button_pressed"]
+[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="Code" method="_on_attacke_button_pressed"]
+[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="Code" method="_on_sage_button_pressed"]
+[connection signal="item_clicked" from="Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="Code" method="_on_item_list_item_clicked"]
+[connection signal="pressed" from="Code/ActionsContainer/createFunction" to="Code" method="_on_create_function_pressed"]
