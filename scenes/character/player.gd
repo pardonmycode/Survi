@@ -8,15 +8,16 @@ signal player_killed
 const TILE_SIZE = 64
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
-var speed_factor = 16 #3
+var move_speed_factor = 16 #3
 var act : String = ""
+var attack_rate : int = 1
 
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
 var _ws_peers 	:= []  # Liste der aktiven WebSocket-Verbindungen
 var time 		:= 0
 
-@onready var code_edit = $Code/CodeEdit
+@onready var code_edit = $Code/CodeContainer/CodeEdit
 @export var playerName : String:
 	set(value):
 		playerName = value
@@ -147,10 +148,10 @@ func tile_move(delta : float):
 		return
 			
 	_pixels_moved += 1
-	velocity = direction * speed_factor
+	velocity = direction * move_speed_factor
 	move_and_collide(velocity)
 	
-	if _pixels_moved >= TILE_SIZE/speed_factor:
+	if _pixels_moved >= TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
 		ws_peer.send_text("Godot: " + act)
@@ -200,8 +201,10 @@ func press_action(action : String):
 		return
 		
 	if "sage" in action:
+		print("sage:"+action)
 		var text = action.trim_prefix("sage")
 		sendMessage(text)
+		ws_peer.send_text("Godot: " + action)
 		
 	if "walk" in action:
 		#Input.action_press(action) 
@@ -219,10 +222,18 @@ func press_action(action : String):
 		elif action == "walkDown":
 			print("input walkDown")
 			direction = Vector2(0, 1)
-	if "left" in action:
+			
+	if "leftClickAction" == action:
+		$AnimationPlayer.speed_scale = attack_rate
 		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
 		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
 			$AnimationPlayer.play(action_anim)
+			print("Play Animation")
+			var delay : float = 0.8 / attack_rate
+			await get_tree().create_timer(delay).timeout
+			$AnimationPlayer.stop()
+			ws_peer.send_text("Godot: " + action)
+			
 	
 
 var last_angle = 0.0

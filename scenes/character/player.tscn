@@ -296,8 +296,7 @@ frame = 4
 [node name="HeldItem" type="Sprite2D" parent="MovingParts"]
 unique_name_in_owner = true
 texture_filter = 1
-rotation = 0.785398
-offset = Vector2(25, -25)
+offset = Vector2(16, 7)
 
 [node name="HitArea" type="Area2D" parent="MovingParts"]
 unique_name_in_owner = true
