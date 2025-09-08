@@ -1,7 +1,7 @@
 
 from typing import List
 
-
+end_token : str = "ende"
 
 class Parser():
     def __init__(self, data = None):
@@ -37,14 +37,14 @@ class Parser():
                 parts = line.split()
                 count = int(parts[1])
                 i += 1
-                # Block sammeln bis passendes "end"
+                # Block sammeln bis passendes end_token
                 block = []
                 depth = 1
                 while i < len(lines) and depth > 0:
                     current = lines[i].strip()
                     if current.startswith("wiederhole"):
                         depth += 1
-                    elif current == "end":
+                    elif current == end_token:
                         depth -= 1
                         if depth == 0:
                             i += 1
@@ -91,14 +91,14 @@ class Parser():
                 i += 1
                 block = []
 
-                # Block einlesen bis "end"
-                while i < len(lines) and lines[i].strip() != "end":
+                # Block einlesen bis end_token
+                while i < len(lines) and lines[i].strip() != end_token:
                     block.append(lines[i].strip())
                     # print(f"Adding line to function {name}: {lines[i]}")
                     i += 1
 
-                # "end" überspringen
-                if i < len(lines) and lines[i].strip() == "end":
+                # end_token überspringen
+                if i < len(lines) and lines[i].strip() == end_token:
                     i += 1  
 
                 self.functions[name] = block

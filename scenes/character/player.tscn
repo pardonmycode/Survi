@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=20 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Texture2D" uid="uid://cojm327d0qfvc" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
@@ -8,6 +8,8 @@
 [ext_resource type="AudioStream" uid="uid://bdbqwftwm7jjj" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
+[ext_resource type="PackedScene" uid="uid://cfks0l8xsjo55" path="res://scenes/main/HUD/hydration_bar.tscn" id="9_g2qfr"]
+[ext_resource type="Script" uid="uid://yd2wu1wfiudc" path="res://scenes/main/HUD/survival_bars.gd" id="10_xub24"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_khhcq"]
 height = 20.0
@@ -527,6 +529,17 @@ highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
+
+[node name="SurvivalBars" parent="." instance=ExtResource("9_g2qfr")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -626.0
+offset_top = 246.0
+offset_right = -334.0
+offset_bottom = 345.0
+grow_vertical = 0
+script = ExtResource("10_xub24")
 
 [connection signal="pressed" from="Code/CodeContainer/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="Code/CodeContainer/ButtonCotainer/CodeDeleteButton" to="Code" method="_on_code_delete_button_pressed"]

@@ -73,6 +73,7 @@ var attackRange := 1.0:
 		
 var ws_peer = WebSocketPeer.new()
 
+var last_angle = 0.0 # für godot server nötig
 
 func _ready():
 	_tcp_server.listen(8765)  # Port 8765
@@ -132,7 +133,9 @@ func input():
 	elif Input.is_action_pressed("walkDown"):
 		print("input walkDown")
 		direction = Vector2(0, 1)
+		
 
+		
 func _physics_process(delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
@@ -211,16 +214,16 @@ func press_action(action : String):
 		#await get_tree().create_timer(0.1).timeout
 		#Input.action_release(action)
 		if action == "walkRight":
-			print("input walkRight")
+			#print("input walkRight")
 			direction = Vector2(1, 0)
 		elif action == "walkLeft":
-			print("input walkLeft")
+			#print("input walkLeft")
 			direction = Vector2(-1, 0)
 		elif action == "walkUp":
-			print("input walkUp")
+			#print("input walkUp")
 			direction = Vector2(0, -1)
 		elif action == "walkDown":
-			print("input walkDown")
+			#print("input walkDown")
 			direction = Vector2(0, 1)
 			
 	if "leftClickAction" == action:
@@ -233,60 +236,7 @@ func press_action(action : String):
 			await get_tree().create_timer(delay).timeout
 			$AnimationPlayer.stop()
 			ws_peer.send_text("Godot: " + action)
-			
-	
 
-var last_angle = 0.0
-
-
-func action(vel, angle, doingAction):
-	if vel != Vector2.ZERO:
-		last_angle = vel.angle()
-	angle = last_angle
-	moveProcess(vel, angle, doingAction)
-
-	var inputData = {
-		"vel": vel,
-		"angle": angle,
-		"doingAction": doingAction
-	}
-	sendInputstwo.rpc_id(1, inputData)
-	sendPos.rpc(position)
-	
-@rpc("any_peer", "call_local", "reliable")
-func sendInputstwo(data):
-	moveServer(data["vel"], data["angle"], data["doingAction"])
-
-@rpc("any_peer", "call_local", "reliable")
-func moveServer(vel, angle, doingAction):
-	$MovingParts.rotation = angle
-	handleAnims(vel,doingAction)
-
-@rpc("any_peer", "call_local", "reliable")
-func sendPos(pos):
-	#print("position"+str(position))
-	position = pos
-
-func moveProcess(vel, angle, doingAction):
-	velocity = vel
-	if velocity != Vector2.ZERO:
-		move_and_slide()
-		#while last_coords == Multihelper.get_map_position(position):
-			#move_and_slide()
-			
-	$MovingParts.rotation = angle
-	handleAnims(vel,doingAction)
-
-func handleAnims(vel, doing_action):
-	if doing_action:
-		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
-			$AnimationPlayer.play(action_anim)
-	elif vel != Vector2.ZERO:
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
-			$AnimationPlayer.play("walking")
-	else:
-		$AnimationPlayer.stop()
 
 func _on_next_item():
 	inventory.nextSelection()
@@ -403,3 +353,57 @@ func projectileHit(body):
 
 func _on_play_button_pressed() -> void:
 	ws_peer.send_text("play_it_now\n"+code_edit.text )
+
+
+
+
+
+
+
+
+# GODOT Server
+func action(vel, angle, doingAction):
+	if vel != Vector2.ZERO:
+		last_angle = vel.angle()
+	angle = last_angle
+	moveProcess(vel, angle, doingAction)
+
+	var inputData = {
+		"vel": vel,
+		"angle": angle,
+		"doingAction": doingAction
+	}
+	sendInputstwo.rpc_id(1, inputData)
+	sendPos.rpc(position)
+	
+@rpc("any_peer", "call_local", "reliable")
+func sendInputstwo(data):
+	moveServer(data["vel"], data["angle"], data["doingAction"])
+
+@rpc("any_peer", "call_local", "reliable")
+func moveServer(vel, angle, doingAction):
+	$MovingParts.rotation = angle
+	handleAnims(vel,doingAction)
+
+@rpc("any_peer", "call_local", "reliable")
+func sendPos(pos):
+	#print("position"+str(position))
+	position = pos
+
+func moveProcess(vel, angle, doingAction):
+	velocity = vel
+	if velocity != Vector2.ZERO:
+		move_and_slide()
+	$MovingParts.rotation = angle
+	handleAnims(vel,doingAction)
+
+func handleAnims(vel, doing_action):
+	if doing_action:
+		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
+			$AnimationPlayer.play(action_anim)
+	elif vel != Vector2.ZERO:
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
+			$AnimationPlayer.play("walking")
+	else:
+		$AnimationPlayer.stop()

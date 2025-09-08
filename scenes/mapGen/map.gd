@@ -13,7 +13,7 @@ var walkable_tiles = []
 @onready var tile_map = $TileMap
 
 
-
+	
 func generateMap():
 	noise.seed = Multihelper.mapSeed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN

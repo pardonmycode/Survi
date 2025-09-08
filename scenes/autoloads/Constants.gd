@@ -11,7 +11,7 @@ const PRIVATE_KEY_PATH := ""
 #const MAP_SIZE := Vector2i(128,128) # see map.gd for tileset specific constants
 const MAP_SIZE := Vector2i(128,128)
 const MAX_OBJECTS := 60
-const MAX_ENEMIES_PER_PLAYER := 0 # 2 # see main.gd for more object and enemy spawner constants
+var MAX_ENEMIES_PER_PLAYER : int = 0 # 2 # see main.gd for more object and enemy spawner constants
 
 #Player
 const MAX_INVENTORY_SLOTS := 12

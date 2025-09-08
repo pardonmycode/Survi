@@ -133,15 +133,15 @@ func _on_server_disconnected():
 
 func loadMap():
 	main = get_node("/root/Game/Level/Main")
-	map = main.get_node("Map")
+	map  = main.get_node("Map")
 	map.generateMap()
 
 func get_map_position(coords : Vector2i):
 	print("get_map_position")
-
 	return map.tile_map.local_to_map(coords)
 	
-func requestSpawn(playerName, id, characterFile):
+func requestSpawn(playerName, id, characterFile,selcted_level : int):
+	main.set_level_options(selcted_level) 
 	player_info["name"] = playerName
 	player_info["body"] = characterFile
 	player_info["score"] = 0

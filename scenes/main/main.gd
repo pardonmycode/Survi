@@ -9,7 +9,7 @@ var spawnedObjects := 0
 #enemies
 var enemyTypes := Items.mobs.keys()
 const enemyWaveCount := 1
-const maxEnemiesPerPlayer := Constants.MAX_ENEMIES_PER_PLAYER
+var maxEnemiesPerPlayer :int = Constants.MAX_ENEMIES_PER_PLAYER
 const enemySpawnRadiusMin := 8
 const enemySpawnRadiusMax := 9
 var spawnedEnemies := {}
@@ -61,7 +61,8 @@ func trySpawnEnemies():
 		var playerEnemies := getPlayerEnemyCount(player)
 		if playerEnemies < maxEnemiesPerPlayer:
 			var toSpawn = min(maxEnemiesPerPlayer - playerEnemies, enemyWaveCount)
-			var spawnPositions = $NavHelper.getNRandomNavigableTileInPlayerRadius(player, toSpawn, enemySpawnRadiusMin, enemySpawnRadiusMax)
+			var spawnPositions = $NavHelper.getNRandomNavigableTileInPlayerRadius(
+							player, toSpawn, enemySpawnRadiusMin, enemySpawnRadiusMax)
 			for pos in spawnPositions:
 				var enemy = enemyScene.instantiate()
 				$Enemies.add_child(enemy,true)
@@ -91,3 +92,9 @@ func decreasePlayerEnemyCount(pId) -> void:
 func _on_enemy_spawn_timer_timeout():
 	if multiplayer.is_server():
 		trySpawnEnemies()
+
+func set_level_options(level : int):
+	print("set level options:"+str(level))
+	if level > 1:
+		maxEnemiesPerPlayer = 2
+	
