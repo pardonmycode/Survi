@@ -5,6 +5,11 @@ var mobs := {
 	"spider": {"maxhp": 80, "speed": 100, "attack": "projectile_attack", "attackDamage": 6, "attackRange": 300, "drops": {"stone": {"min": 1, "max": 2}}},
 }
 
+var animals := {
+	"pig": {"maxhp": 40, "speed": 50, "attack": "slash_attack", "attackDamage": 1, "attackRange": 50, "drops": {"berries": {"min": 1, "max": 2}}},
+	#"spider": {"maxhp": 80, "speed": 100, "attack": "projectile_attack", "attackDamage": 6, "attackRange": 300, "drops": {"stone": {"min": 1, "max": 2}}},
+}
+
 var objects := {
 	"tree1": {"id": "tree1", "hp": 40, "tool": "axe", "drops": {"wood": {"min": 1, "max": 2}}},
 	"rock1": {"id": "rock1", "hp": 70, "tool": "pickaxe", "drops": {"stone": {"min": 1, "max": 3}}},

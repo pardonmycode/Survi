@@ -55,7 +55,7 @@ func tryAttack():
 		$AttackCooldown.start()
 		var projectileScene := load("res://scenes/attacks/"+attack+".tscn")
 		var projectile = projectileScene.instantiate()
-		spawner.get_node("Projectiles").add_child(projectile,true)
+		spawner.get_node("../Projectiles").add_child(projectile,true)
 		projectile.position = position
 		projectile.get_node("MovingParts").rotation = $MovingParts.rotation
 		projectile.hitPlayer.connect(hitPlayer)

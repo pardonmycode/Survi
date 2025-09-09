@@ -1,9 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://ccrctrojuyiel"]
+[gd_scene load_steps=15 format=3 uid="uid://ccrctrojuyiel"]
 
 [ext_resource type="Script" uid="uid://c4h0ahffrs4to" path="res://scenes/main/main.gd" id="1_5kenc"]
 [ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/mapGen/map.tscn" id="1_vj1jr"]
 [ext_resource type="PackedScene" uid="uid://do5frseoo8sxj" path="res://scenes/ui/spawn/spawnPlayer.tscn" id="2_ajc02"]
 [ext_resource type="PackedScene" uid="uid://becibolw633ar" path="res://code_editor.tscn" id="3_blune"]
+[ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/enemies.gd" id="3_th5th"]
+[ext_resource type="Script" uid="uid://dl6e2xb030n8p" path="res://scenes/main/animal.gd" id="4_th5th"]
 [ext_resource type="PackedScene" uid="uid://c0gaxwlt4ajax" path="res://scenes/ui/playersList/generalHud.tscn" id="5_th5th"]
 [ext_resource type="PackedScene" uid="uid://bmv1uy5a1k05u" path="res://scenes/ui/inventory/inventory.tscn" id="6_tq15c"]
 [ext_resource type="PackedScene" uid="uid://cogav6f5iu6qb" path="res://scenes/ui/minimap/minimap.tscn" id="6_xel07"]
@@ -27,6 +29,10 @@ script = ExtResource("1_5kenc")
 [node name="Players" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]
+script = ExtResource("3_th5th")
+
+[node name="Animal" type="Node2D" parent="."]
+script = ExtResource("4_th5th")
 
 [node name="Projectiles" type="Node2D" parent="."]
 
@@ -89,6 +95,10 @@ autostart = true
 wait_time = 15.0
 autostart = true
 
+[node name="AnimalSpawnTimer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
 [node name="dayNight" type="CanvasModulate" parent="."]
 script = ExtResource("7_4y3sb")
 gradient_texture = ExtResource("8_le63a")
@@ -99,3 +109,4 @@ replication_config = SubResource("SceneReplicationConfig_dr53p")
 
 [connection signal="timeout" from="ObjectSpawnTimer" to="." method="_on_object_spawn_timer_timeout"]
 [connection signal="timeout" from="EnemySpawnTimer" to="." method="_on_enemy_spawn_timer_timeout"]
+[connection signal="timeout" from="AnimalSpawnTimer" to="." method="_on_animal_spawn_timer_timeout"]
