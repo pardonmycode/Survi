@@ -29,18 +29,16 @@ var hp := maxhp:
 
 var speed := 2000.0
 var attack := ""
-var attackRange := 50.0
-var attackDamage := 20.0
+var attackRange := 5.0
+var attackDamage := 2.0
 var drops := {}
 
 func _process(_delta):
 	if !multiplayer.is_server():
 		return
-	if is_instance_valid(targetPlayer):
-		rotateToTarget()
-		if position.distance_to(targetPlayer.position) > attackRange:
-			move_towards_position()
-		else:
+		
+	randomWalk()
+	if position.distance_to(targetPlayer.position) > attackRange:
 			tryAttack()
 	else:
 		die(false)
@@ -51,8 +49,8 @@ func randomWalk():
 	move_and_slide()
 
 
-func move_towards_position():
-	var direction = (targetPlayer.position - position).normalized()
+func move_towards(target_position : Vector2i):
+	var direction = (target_position - position).normalized()
 	velocity = direction * speed
 	move_and_slide()
 
@@ -87,5 +85,5 @@ func die(dropLoot):
 			dropLoots()
 
 func dropLoots():
-	for drop in drops.keys():
+	for drop in drops.keys(): # TODO png food
 		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))
