@@ -50,10 +50,19 @@ func _on_enemy_spawn_timer_timeout():
 
 func _on_animal_spawn_timer_timeout() -> void:
 	if multiplayer.is_server():
-		pass
-		#trySpawnAnimals()
+		$Animal.trySpawnAnimals()
 		
 func set_level_options(level : int):
 	print("set level options:"+str(level))
-	if level > 1:
-		$Enemies.maxEnemiesPerPlayer = 2
+	
+	if level == 0:
+		$Enemies.maxEnemiesPerPlayer = 0
+		$Animal.maxAnimalsPerPlayer  = 0
+		
+	if level == 1:
+		$Enemies.maxEnemiesPerPlayer = 0
+		$Animal.maxAnimalsPerPlayer  = 2
+		
+	if level == 2:
+		$Enemies.maxEnemiesPerPlayer = 1
+		$Animal.maxAnimalsPerPlayer  = 2

@@ -13,7 +13,7 @@ var targetPlayer : CharacterBody2D
 @export var animalId := "":
 	set(value):
 		animalId = value
-		var animalData = Items.mobs[value]
+		var animalData = Items.animals[value]
 		%Sprite2D.texture = load("res://assets/characters/animal/"+value+".png")
 		for stat in animalData.keys():
 			set(stat, animalData[stat])
@@ -37,11 +37,12 @@ func _process(_delta):
 	if !multiplayer.is_server():
 		return
 		
-	randomWalk()
-	if position.distance_to(targetPlayer.position) > attackRange:
-			tryAttack()
-	else:
-		die(false)
+	#randomWalk()
+	if targetPlayer == null:
+		return
+	if position.distance_to(targetPlayer.position) < attackRange:
+		$MovingParts.look_at(targetPlayer.position)
+		tryAttack()
 
 func randomWalk():
 	velocity = direction.pick_random() * speed
@@ -49,7 +50,7 @@ func randomWalk():
 	move_and_slide()
 
 
-func move_towards(target_position : Vector2i):
+func move_towards(target_position : Vector2 ):
 	var direction = (target_position - position).normalized()
 	velocity = direction * speed
 	move_and_slide()
@@ -59,7 +60,7 @@ func tryAttack():
 		$AttackCooldown.start()
 		var projectileScene := load("res://scenes/attacks/"+attack+".tscn")
 		var projectile = projectileScene.instantiate()
-		spawner.get_node("Projectiles").add_child(projectile,true)
+		spawner.get_node("../Projectiles").add_child(projectile,true)
 		projectile.position = position
 		projectile.get_node("MovingParts").rotation = $MovingParts.rotation
 		projectile.hitPlayer.connect(hitPlayer)

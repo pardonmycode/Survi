@@ -6,8 +6,12 @@ var mobs := {
 }
 
 var animals := {
-	"pig": {"maxhp": 40, "speed": 50, "attack": "slash_attack", "attackDamage": 1, "attackRange": 50, "drops": {"berries": {"min": 1, "max": 2}}},
+	"pig": {"maxhp": 23, "speed": 50, "attack": "slash_attack", "attackDamage": 1, "attackRange": 50, "drops": {"food": {"min": 1, "max": 2}}},
 	#"spider": {"maxhp": 80, "speed": 100, "attack": "projectile_attack", "attackDamage": 6, "attackRange": 300, "drops": {"stone": {"min": 1, "max": 2}}},
+}
+var consume := {
+	"food": {"hp": 10, "food": 20},
+	"berries": {"hp": 10, "food": 20},
 }
 
 var objects := {

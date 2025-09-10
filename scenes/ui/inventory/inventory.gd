@@ -86,6 +86,7 @@ func prevSelection():
 	selectionChanged.emit(selectedSlot)
 
 func itemSelected(id):
+
 	var equipList := Items.equips.keys()
 	if id in equipList:
 		player.tryEquipItem.rpc_id(1, id)

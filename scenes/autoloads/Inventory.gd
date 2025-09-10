@@ -80,6 +80,8 @@ func canCraftItem(id, item) -> bool:
 			return false
 	return true
 
+
+
 func useItemDurability(id, item, durabilityDamage = 1):
 	if id not in durabilities:
 		durabilities[id] = {}

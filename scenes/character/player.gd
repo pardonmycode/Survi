@@ -8,7 +8,7 @@ signal player_killed
 const TILE_SIZE = 64
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
-var move_speed_factor = 16 #3
+var move_speed_factor = 3
 var act : String = ""
 var attack_rate : int = 1
 
@@ -209,6 +209,14 @@ func press_action(action : String):
 		sendMessage(text)
 		ws_peer.send_text("Godot: " + action)
 		
+	if "nutze Item" in action:
+		print("nutze Item:"+action)
+		var item_id_str = action.trim_prefix("nutze Item")
+		if item_id_str.is_valid_int():
+			var item_id = int(item_id_str)
+			inventory.itemSelected(item_id)
+		ws_peer.send_text("Godot: " + action)
+		
 	if "walk" in action:
 		#Input.action_press(action) 
 		#await get_tree().create_timer(0.1).timeout
@@ -299,16 +307,16 @@ func die():
 	if !multiplayer.is_server():
 		return
 	var peerId := int(str(name))
-	Multihelper._deregister_character.rpc(peerId)
+	#Multihelper._deregister_character.rpc(peerId) # für Server
 	dropInventory()
 	queue_free()
 	if peerId in multiplayer.get_peers():
 		Multihelper.showSpawnUI.rpc_id(peerId)
 		
 func dropInventory():
-	var inventoryDict = Inventory.inventories[name]
+	var inventoryDict = Inventory.inventories
 	for item in inventoryDict.keys():
-		Items.spawnPickups(item, position, inventoryDict[item])
+		Items.spawnPickups(item, position, inventoryDict[item].size() )
 	Inventory.inventories[name] = {}
 	Inventory.inventoryUpdated.emit(name)
 	Inventory.inventories.erase(name)
