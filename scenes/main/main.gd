@@ -6,14 +6,6 @@ const maxObjects := Constants.MAX_OBJECTS
 const objectWaveCount := 10
 var spawnedObjects := 0
 
-#enemies
-var enemyTypes := Items.mobs.keys()
-const enemyWaveCount := 1
-var maxEnemiesPerPlayer :int = Constants.MAX_ENEMIES_PER_PLAYER
-const enemySpawnRadiusMin := 8
-const enemySpawnRadiusMax := 9
-var spawnedEnemies := {}
-
 func _ready():
 	if multiplayer.is_server():
 		Multihelper.loadMap()
@@ -28,7 +20,6 @@ func _ready():
 	#$HUD.add_child(hud)
 
 #object spawn
-
 func spawnObjects(amount):
 	var breakableScene := preload("res://scenes/spawn/object/breakable.tscn")
 	var spawnedThisWave := 0
@@ -53,48 +44,16 @@ func _on_object_spawn_timer_timeout():
 	if multiplayer.is_server():
 		trySpawnObjectWave()
 
-#enemy spawn
-func trySpawnEnemies():
-	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
-	var players = Multihelper.spawnedPlayers.keys()
-	for player in players:
-		var playerEnemies := getPlayerEnemyCount(player)
-		if playerEnemies < maxEnemiesPerPlayer:
-			var toSpawn = min(maxEnemiesPerPlayer - playerEnemies, enemyWaveCount)
-			var spawnPositions = $NavHelper.getNRandomNavigableTileInPlayerRadius(
-							player, toSpawn, enemySpawnRadiusMin, enemySpawnRadiusMax)
-			for pos in spawnPositions:
-				var enemy = enemyScene.instantiate()
-				$Enemies.add_child(enemy,true)
-				enemy.position = pos
-				enemy.spawner = self
-				enemy.targetPlayerId = player
-				enemy.enemyId = enemyTypes.pick_random()
-				increasePlayerEnemyCount(player)
-
-func getPlayerEnemyCount(pId) -> int:
-	if pId in spawnedEnemies:
-		return spawnedEnemies[pId]
-	return 0
-
-func increasePlayerEnemyCount(pId) -> void:
-	if pId in spawnedEnemies:
-		spawnedEnemies[pId] += 1
-	else:
-		spawnedEnemies[pId] = 1
-
-func decreasePlayerEnemyCount(pId) -> void:
-	if pId in spawnedEnemies:
-		spawnedEnemies[pId] -= 1
-	else:
-		spawnedEnemies[pId] = 1
-
 func _on_enemy_spawn_timer_timeout():
 	if multiplayer.is_server():
-		trySpawnEnemies()
+		$Enemies.trySpawnEnemies()
 
+func _on_animal_spawn_timer_timeout() -> void:
+	if multiplayer.is_server():
+		pass
+		#trySpawnAnimals()
+		
 func set_level_options(level : int):
 	print("set level options:"+str(level))
 	if level > 1:
-		maxEnemiesPerPlayer = 2
-	
+		$Enemies.maxEnemiesPerPlayer = 2
