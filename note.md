@@ -1,3 +1,12 @@
+https://teachablemachine.withgoogle.com/
+
+
+
+
+
+
+
+
 Welche KI benutzt ihr zuhause
 
 Was ist eine Kunstliche Intelligenz
