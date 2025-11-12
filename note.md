@@ -1,6 +1,6 @@
 https://teachablemachine.withgoogle.com/
 https://slxs.de/ml/
-
+https://www.youtube.com/watch?v=HnWIHWFbuUQ
 
 
 
