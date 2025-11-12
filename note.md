@@ -1,5 +1,5 @@
 https://teachablemachine.withgoogle.com/
-
+https://slxs.de/ml/
 
 
 
