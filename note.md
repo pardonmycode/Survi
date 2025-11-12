@@ -5,7 +5,7 @@ https://developers.google.com/machine-learning/crash-course/neural-networks/inte
 https://magenta.withgoogle.com/assets/sketch_rnn_demo/index.html  DRAW togehter
 https://blog.learn-with.ai/p/ki-zum-anfassen
 
-
+ 
 
 Welche KI benutzt ihr zuhause
 
