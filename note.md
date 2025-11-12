@@ -1,9 +1,9 @@
 https://teachablemachine.withgoogle.com/
 https://slxs.de/ml/
 https://www.youtube.com/watch?v=HnWIHWFbuUQ
-
-
-
+https://developers.google.com/machine-learning/crash-course/neural-networks/interactive-exercises#:~:text=Neural%20networks%3A%20Interactive%20exercises%20,content%20based%20on%20your%20preferences
+https://magenta.withgoogle.com/assets/sketch_rnn_demo/index.html  DRAW togehter
+https://blog.learn-with.ai/p/ki-zum-anfassen
 
 
 
