@@ -6,7 +6,7 @@ https://magenta.withgoogle.com/assets/sketch_rnn_demo/index.html  DRAW togehter
 https://blog.learn-with.ai/p/ki-zum-anfassen
 
  
-
+https://create.kahoot.it/details/a10da8bd-4321-4700-9959-b486c62d101f
 Welche KI benutzt ihr zuhause
 
 Was ist eine Kunstliche Intelligenz
